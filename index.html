@@ -11,14 +11,15 @@
         <canvas>
             This text is displayed if your browser does not support HTML5 Canvas.
         </canvas>
-        <div class="flex-space-inbetween">
-            <span id="current-image-name"></span>
+        <div id="content">
+            <div class="flex-space-inbetween">
+                <span id="current-image-name"></span>
+            </div>
+            <div class="right">
+                <input type="file" id="selectedFile" accept="image/*"  style="display: none;" />
+                <input type="button" value="Upload New Image" onclick="document.getElementById('selectedFile').click();" />
+            </div>
         </div>
-        <div class="right">
-            <input type="file" id="selectedFile" accept="image/*"  style="display: none;" />
-            <input type="button" value="Upload New Image" onclick="document.getElementById('selectedFile').click();" />
-        </div>
-
     </div>
     <script>
         document.querySelector('#selectedFile').addEventListener('change', e => {

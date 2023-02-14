@@ -6,20 +6,23 @@ body {
 #app {
     display: flex;
     flex-direction: column;
+    height: 100vh;
 }
 
 #current-image-name {
     font-weight: bold;
 }
 
+#content {
+    flex-grow: 0;
+}
 button {
     width: fit-content;
 }
 
 canvas {
-    width: 90vw;
-    height: 70vh;
     border: 1px solid #eee;
+    flex-grow: 1;
 }
 
 .right {
