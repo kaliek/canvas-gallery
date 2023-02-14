@@ -1,0 +1,28 @@
+body {
+    font-family: sans-serif, arial, helvetica;
+    font-size: 2em;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+}
+
+#current-image-name {
+    font-weight: bold;
+}
+
+button {
+    width: fit-content;
+}
+
+canvas {
+    width: 90vw;
+    height: 70vh;
+    border: 1px solid #eee;
+}
+
+.right {
+    margin-left: auto;
+}
+
