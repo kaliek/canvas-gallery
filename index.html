@@ -30,6 +30,7 @@
             onclick="document.getElementById('selectedFile').click();"
           />
         </div>
+        <span class="tag"></span>
       </div>
     </div>
     <script>
@@ -98,9 +99,14 @@
           const width = end.x - start.x;
           const height = end.y - start.y;
           context.lineWidth = 1;
-          context.strokeStyle = "grey";
+          context.strokeStyle = "#B1B9C0";
           context.rect(start.x, start.y, width, height);
           context.stroke();
+          let tag = prompt("Please type the tag text", "your tag");
+          document.querySelector('.tag').textContent = tag;
+          context.fillStyle = '#B1B9C0';
+          context.font = '14px';
+          context.fillText(tag, start.x + 10, start.y + 10);
         }
         function draw(e) {
           e.preventDefault();
@@ -121,6 +127,7 @@
         canvas.addEventListener("mousedown", startPosition);
         canvas.addEventListener("mouseup", endPosition);
         canvas.addEventListener("mousemove", draw);
+
       });
     </script>
   </body>
