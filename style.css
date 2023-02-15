@@ -12,17 +12,28 @@ body {
 #current-image-name {
     font-weight: bold;
 }
-
+#image {
+    flex-grow: 1;
+}
 #content {
     flex-grow: 0;
 }
+
 button {
     width: fit-content;
 }
 
+img {
+    position: absolute;
+    height: 1080px;
+    width: 1920px;
+    pointer-events: initial;
+}
+
 canvas {
+    position: relative;
     border: 1px solid #eee;
-    flex-grow: 1;
+    z-index: 20;
 }
 
 .right {
