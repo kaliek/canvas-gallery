@@ -8,7 +8,7 @@
 
 <body>
     <div id="app">
-        <canvas>
+        <canvas height="1080" width="1920">
             This text is displayed if your browser does not support HTML5 Canvas.
         </canvas>
         <div id="content">
@@ -16,44 +16,97 @@
                 <span id="current-image-name"></span>
             </div>
             <div class="right">
-                <input type="file" id="selectedFile" accept="image/*"  style="display: none;" />
-                <input type="button" value="Upload New Image" onclick="document.getElementById('selectedFile').click();" />
+                <input type="file" id="selectedFile" accept="image/*" style="display: none;" />
+                <input type="button" value="Upload New Image"
+                    onclick="document.getElementById('selectedFile').click();" />
             </div>
         </div>
     </div>
     <script>
-        document.querySelector('#selectedFile').addEventListener('change', e => {
-            e.preventDefault();
-            const reader = new FileReader();
-            reader.readAsDataURL(e.target.files[0]);
-            reader.onload = () => {
-                const image = new Image();
-                image.src = reader.result;
-                image.onload = () => {
-                    const canvas = document.querySelector('canvas');
-                    var MAX_WIDTH = canvas.width;;
-                    var MAX_HEIGHT = canvas.height;
+        window.addEventListener('load', () => {
+            const canvas = document.querySelector("canvas");
+            const context = canvas.getContext('2d');
+            document.querySelector('#selectedFile').addEventListener('change', e => {
+                e.preventDefault();
+                const reader = new FileReader();
+                reader.readAsDataURL(e.target.files[0]);
+                reader.onload = () => {
+                    const image = new Image();
+                    image.src = reader.result;
+                    image.onload = () => {
+                        var MAX_WIDTH = canvas.width;;
+                        var MAX_HEIGHT = canvas.height;
 
-                    var width = image.width;
-                    var height = image.height;
+                        var width = image.width;
+                        var height = image.height;
 
-                    // Change the resizing logic
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height = height * (MAX_WIDTH / width);
-                            width = MAX_WIDTH;
+                        // Change the resizing logic
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height = height * (MAX_WIDTH / width);
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width = width * (MAX_HEIGHT / height);
+                                height = MAX_HEIGHT;
+                            }
                         }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width = width * (MAX_HEIGHT / height);
-                            height = MAX_HEIGHT;
-                        }
+                        context.drawImage(image, 0, 0, width, height);
+                        document.querySelector('#current-image-name').textContent = e.target.files[0].name;
                     }
-                    const context = canvas.getContext('2d');
-                    context.drawImage(image, 0, 0, width, height);
-                    document.querySelector('#current-image-name').textContent = e.target.files[0].name;
+                }
+            });
+            let isDrawing = false;
+            let start = {x: 0, y: 0};
+            function getMousePos(canvas, e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
                 }
             }
+            function startPosition(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('starting');
+                isDrawing = true;
+                start = getMousePos(canvas, e);
+            }
+            function endPosition(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                isDrawing = false;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                const end = getMousePos(canvas, e);
+                const width = end.x - start.x;
+                const height = end.y - start.y;
+                context.lineWidth = 1;
+                context.strokeStyle = 'grey';
+                context.rect(start.x, start.y, width, height);
+                context.stroke();
+            }
+            function draw(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isDrawing || !canvas.getContext) return;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                const pos = getMousePos(canvas, e);
+                const width = pos.x - start.x;
+                const height = pos.y - start.y;
+                context.beginPath();
+                context.fillStyle = "#C6E6FF";
+                context.lineWidth = 2;
+                context.strokeStyle = "#047DFF";
+                context.rect(start.x, start.y, width, height);
+                context.fill();
+            }
+
+            canvas.addEventListener('mousedown', startPosition);
+            canvas.addEventListener('mouseup', endPosition);
+            canvas.addEventListener('mousemove', draw);
         });
     </script>
 </body>
