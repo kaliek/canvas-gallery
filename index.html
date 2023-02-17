@@ -30,7 +30,7 @@
             onclick="document.getElementById('selectedFile').click();"
           />
         </div>
-        <span class="tag"></span>
+        <ul id="tags"></ul>
       </div>
     </div>
     <script>
@@ -94,16 +94,19 @@
           e.preventDefault();
           e.stopPropagation();
           isDrawing = false;
-          context.clearRect(0, 0, canvas.width, canvas.height);
+
           const end = getMousePos(canvas, e);
           const width = end.x - start.x;
           const height = end.y - start.y;
+          context.clearRect(start.x, start.y, width, height);
           context.lineWidth = 1;
           context.strokeStyle = "#B1B9C0";
-          context.rect(start.x, start.y, width, height);
           context.stroke();
+          const list = document.querySelector('#tags');
           let tag = prompt("Please type the tag text", "your tag");
-          document.querySelector('.tag').textContent = tag;
+          const item = document.createElement('li');
+          item.textContent = tag;
+          list.appendChild(item);
           context.fillStyle = '#B1B9C0';
           context.font = '14px';
           context.fillText(tag, start.x + 10, start.y + 10);
@@ -112,15 +115,16 @@
           e.preventDefault();
           e.stopPropagation();
           if (!isDrawing || !canvas.getContext) return;
-          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.clearRect(start.x, start.y, canvas.width, canvas.height);
           const pos = getMousePos(canvas, e);
           const width = pos.x - start.x;
           const height = pos.y - start.y;
           context.beginPath();
-          context.fillStyle = "#C6E6FF";
-          context.lineWidth = 2;
+          context.fillStyle = "rgba(198,230,255, 0.4)";
+          context.lineWidth = 1;
           context.strokeStyle = "#047DFF";
           context.rect(start.x, start.y, width, height);
+          context.stroke();
           context.fill();
         }
 
