@@ -8,7 +8,7 @@
   <body>
     <div id="app">
       <div id="image">
-        <img />
+        <img height="1080" width="1920"/>
         <canvas height="1080" width="1920">
           This text is displayed if your browser does not support HTML5 Canvas.
         </canvas>
@@ -49,8 +49,8 @@
               const image = document.querySelector("img");
               image.src = reader.result;
               image.onload = () => {
-                const width = image.width;
-                const height = image.height;
+                let width = image.width;
+                let height = image.height;
 
                 // Change the resizing logic
                 if (width > height) {
@@ -66,7 +66,8 @@
                 }
                 canvas.width = width;
                 canvas.height = height;
-                // context.drawImage(image, 0, 0, width, height);
+                image.width = width;
+                image.height = height;
                 document.querySelector("#current-image-name").textContent =
                   e.target.files[0].name;
               };
