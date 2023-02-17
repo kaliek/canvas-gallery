@@ -8,7 +8,7 @@
   <body>
     <div id="app">
       <div id="image">
-        <img height="1080" width="1920"/>
+        <img id="current-image" height="1080" width="1920" />
         <canvas height="1080" width="1920">
           This text is displayed if your browser does not support HTML5 Canvas.
         </canvas>
@@ -39,6 +39,8 @@
       window.addEventListener("load", () => {
         const canvas = document.querySelector("canvas");
         const context = canvas.getContext("2d");
+        let imageWidth = canvas.width;
+        let imageHeight = canvas.height;
         document
           .querySelector("#selectedFile")
           .addEventListener("change", (e) => {
@@ -46,11 +48,11 @@
             const reader = new FileReader();
             reader.readAsDataURL(e.target.files[0]);
             reader.onload = () => {
-              const image = document.querySelector("img");
+              const image = document.getElementById("current-image");
               image.src = reader.result;
               image.onload = () => {
-                let width = image.width;
-                let height = image.height;
+                imageWidth = image.width;
+                imageHeight = image.height;
 
                 // Change the resizing logic
                 if (width > height) {
@@ -64,10 +66,10 @@
                     height = MAX_HEIGHT;
                   }
                 }
-                canvas.width = width;
-                canvas.height = height;
-                image.width = width;
-                image.height = height;
+                canvas.width = imageWidth;
+                canvas.height = imageHeight;
+                image.width = imageWidth;
+                image.height = imageHeight;
                 document.querySelector("#current-image-name").textContent =
                   e.target.files[0].name;
               };
@@ -99,24 +101,51 @@
           const end = getMousePos(canvas, e);
           const width = end.x - start.x;
           const height = end.y - start.y;
-          context.clearRect(start.x, start.y, width, height);
-          context.lineWidth = 1;
-          context.strokeStyle = "#B1B9C0";
-          context.stroke();
-          const list = document.querySelector('#tags');
+          const list = document.querySelector("#tags");
           let tag = prompt("Please type the tag text", "your tag");
-          const item = document.createElement('li');
+          context.clearRect(0, 0, imageWidth, imageHeight);
+          const item = document.createElement("li");
           item.textContent = tag;
           list.appendChild(item);
-          context.fillStyle = '#B1B9C0';
-          context.font = '14px';
-          context.fillText(tag, start.x + 10, start.y + 10);
+
+          var svgns = "http://www.w3.org/2000/svg";
+          const svg = document.createElementNS(svgns, "svg");
+          console.log(imageHeight, imageWidth);
+          svg.setAttribute(
+            "style",
+            `position: absolute;height: ${imageHeight}px;width:${imageWidth}px;`
+          );
+
+          const g = document.createElementNS(svgns, "g");
+          g.setAttribute(
+            "style",
+            `height: ${imageHeight}px;width:${imageWidth}px;`
+          );
+          const rect = document.createElementNS(svgns, "rect");
+          rect.setAttribute("x", start.x);
+          rect.setAttribute("y", start.y);
+          rect.setAttribute("height", height);
+          rect.setAttribute("width", width);
+          rect.setAttribute("stroke", "#B1B9C0");
+          rect.setAttribute("fill", "none");
+          rect.setAttribute("stroke-width", "1px");
+          const text = document.createElementNS(svgns, "text");
+          text.setAttribute("x", start.x + 2);
+          text.setAttribute("y", start.y + 16);
+          text.setAttribute("font-size", 14);
+          text.setAttribute("fill", "#B1B9C0");
+          text.textContent = tag;
+          g.appendChild(rect);
+          g.appendChild(text);
+          svg.appendChild(g);
+          const parent = document.getElementById("image");
+          parent.insertBefore(svg, document.querySelector("canvas"));
         }
         function draw(e) {
           e.preventDefault();
           e.stopPropagation();
           if (!isDrawing || !canvas.getContext) return;
-          context.clearRect(start.x, start.y, canvas.width, canvas.height);
+          context.clearRect(0, 0, canvas.width, canvas.height);
           const pos = getMousePos(canvas, e);
           const width = pos.x - start.x;
           const height = pos.y - start.y;
@@ -132,7 +161,6 @@
         canvas.addEventListener("mousedown", startPosition);
         canvas.addEventListener("mouseup", endPosition);
         canvas.addEventListener("mousemove", draw);
-
       });
     </script>
   </body>
