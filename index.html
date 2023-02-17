@@ -34,45 +34,74 @@
       </div>
     </div>
     <script>
+      const IMAGES_KEY = "IMAGES_LIST";
       const MAX_WIDTH = 1920;
       const MAX_HEIGHT = 1080;
+
       window.addEventListener("load", () => {
         const canvas = document.querySelector("canvas");
         const context = canvas.getContext("2d");
         let imageWidth = canvas.width;
         let imageHeight = canvas.height;
+        function loadImage(id, src) {
+          const image = document.getElementById("current-image");
+          image.src = src;
+          const imageName = id;
+          image.onload = () => {
+            imageWidth = image.width;
+            imageHeight = image.height;
+
+            // Change the resizing logic
+            if (imageWidth > imageHeight) {
+              if (imageWidth > MAX_WIDTH) {
+                imageHeight = imageHeight * (MAX_WIDTH / imageWidth);
+                imageWidth = MAX_WIDTH;
+              }
+            } else {
+              if (imageHeight > MAX_HEIGHT) {
+                imageWidth = imageWidth * (MAX_HEIGHT / imageHeight);
+                imageHeight = MAX_HEIGHT;
+              }
+            }
+            const canvas = document.querySelector("canvas");
+            canvas.width = imageWidth;
+            canvas.height = imageHeight;
+            image.width = imageWidth;
+            image.height = imageHeight;
+            document.querySelector("#current-image-name").textContent =imageName;
+          };
+        }
+        const storedImageList = localStorage.getItem(IMAGES_KEY);
+        if (storedImageList) {
+          const list = JSON.parse(storedImageList);
+          const firstImage = list?.[0];
+          if (firstImage) {
+            const firstImageSrc = localStorage.getItem(firstImage);
+            if (firstImageSrc) {
+              loadImage(firstImage, firstImageSrc);
+            }
+          }
+        }
         document
           .querySelector("#selectedFile")
           .addEventListener("change", (e) => {
             e.preventDefault();
             const reader = new FileReader();
             reader.readAsDataURL(e.target.files[0]);
-            reader.onload = () => {
-              const image = document.getElementById("current-image");
-              image.src = reader.result;
-              image.onload = () => {
-                imageWidth = image.width;
-                imageHeight = image.height;
+            const imageName = e.target.files[0].name;
 
-                // Change the resizing logic
-                if (width > height) {
-                  if (width > MAX_WIDTH) {
-                    height = height * (MAX_WIDTH / width);
-                    width = MAX_WIDTH;
-                  }
-                } else {
-                  if (height > MAX_HEIGHT) {
-                    width = width * (MAX_HEIGHT / height);
-                    height = MAX_HEIGHT;
-                  }
-                }
-                canvas.width = imageWidth;
-                canvas.height = imageHeight;
-                image.width = imageWidth;
-                image.height = imageHeight;
-                document.querySelector("#current-image-name").textContent =
-                  e.target.files[0].name;
-              };
+            reader.onload = () => {
+              loadImage(imageName, reader.result);
+              const currentImageList = localStorage.getItem(IMAGES_KEY);
+              if (!currentImageList) {
+                const list = [imageName];
+                localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
+              } else {
+                const list = JSON.parse(currentImageList);
+                list.push(imageName);
+                localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
+              }
+              localStorage.setItem(imageName, reader.result);
             };
           });
         let isDrawing = false;
