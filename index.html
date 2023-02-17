@@ -34,8 +34,8 @@
       </div>
     </div>
     <script>
-      const MAX_WIDTH = 1080;
-      const MAX_HEIGHT = 1920;
+      const MAX_WIDTH = 1920;
+      const MAX_HEIGHT = 1080;
       window.addEventListener("load", () => {
         const canvas = document.querySelector("canvas");
         const context = canvas.getContext("2d");
@@ -110,12 +110,10 @@
 
           var svgns = "http://www.w3.org/2000/svg";
           const svg = document.createElementNS(svgns, "svg");
-          console.log(imageHeight, imageWidth);
           svg.setAttribute(
             "style",
             `position: absolute;height: ${imageHeight}px;width:${imageWidth}px;`
           );
-
           const g = document.createElementNS(svgns, "g");
           g.setAttribute(
             "style",
