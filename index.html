@@ -43,6 +43,37 @@
         const context = canvas.getContext("2d");
         let imageWidth = canvas.width;
         let imageHeight = canvas.height;
+        let isDrawing = false;
+        let start = { x: 0, y: 0 };
+
+        function getImageListFromLocalStorage() {
+          const storedImageList = localStorage.getItem(IMAGES_KEY);
+          const list = JSON.parse(storedImageList);
+          return Array.isArray(list) ? list : [];
+        }
+        function getImageFromLocalStorage() {
+          if (currentImageOrder >= savedImageList.length) {
+            return undefined;
+          }
+          const name = savedImageList[currentImageOrder];
+          const src = localStorage.getItem(name);
+          if (src) {
+            return { name, src };
+          }
+          return undefined;
+        }
+        function saveImageToLocalStorage(name, src) {
+          const currentImageList = localStorage.getItem(IMAGES_KEY);
+          if (!currentImageList) {
+            const list = [name];
+            localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
+          } else {
+            const list = JSON.parse(currentImageList);
+            list.unshift(name); // More recent comes first
+            localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
+          }
+          localStorage.setItem(name, src);
+        }
         function loadImage(id, src) {
           const image = document.getElementById("current-image");
           image.src = src;
@@ -68,44 +99,10 @@
             canvas.height = imageHeight;
             image.width = imageWidth;
             image.height = imageHeight;
-            document.querySelector("#current-image-name").textContent =imageName;
+            document.querySelector("#current-image-name").textContent =
+              imageName;
           };
         }
-        const storedImageList = localStorage.getItem(IMAGES_KEY);
-        if (storedImageList) {
-          const list = JSON.parse(storedImageList);
-          const firstImage = list?.[0];
-          if (firstImage) {
-            const firstImageSrc = localStorage.getItem(firstImage);
-            if (firstImageSrc) {
-              loadImage(firstImage, firstImageSrc);
-            }
-          }
-        }
-        document
-          .querySelector("#selectedFile")
-          .addEventListener("change", (e) => {
-            e.preventDefault();
-            const reader = new FileReader();
-            reader.readAsDataURL(e.target.files[0]);
-            const imageName = e.target.files[0].name;
-
-            reader.onload = () => {
-              loadImage(imageName, reader.result);
-              const currentImageList = localStorage.getItem(IMAGES_KEY);
-              if (!currentImageList) {
-                const list = [imageName];
-                localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
-              } else {
-                const list = JSON.parse(currentImageList);
-                list.push(imageName);
-                localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
-              }
-              localStorage.setItem(imageName, reader.result);
-            };
-          });
-        let isDrawing = false;
-        let start = { x: 0, y: 0 };
         function getMousePos(canvas, e) {
           const rect = canvas.getBoundingClientRect();
           const scaleX = canvas.width / rect.width;
@@ -185,9 +182,33 @@
           context.fill();
         }
 
+        document
+          .querySelector("#selectedFile")
+          .addEventListener("change", (e) => {
+            e.preventDefault();
+            const reader = new FileReader();
+            const file = e.target.files[0]; // First file for now
+            reader.readAsDataURL(file);
+            const imageName = file.name;
+
+            reader.onload = () => {
+              loadImage(imageName, reader.result);
+              saveImageToLocalStorage(imageName, reader.result);
+            };
+          });
         canvas.addEventListener("mousedown", startPosition);
         canvas.addEventListener("mouseup", endPosition);
         canvas.addEventListener("mousemove", draw);
+
+        // Initial loading
+        let currentImageName = "";
+        let currentImageOrder = 0;
+        let savedImageList = getImageFromLocalStorage();
+        const savedImage = getImageFromLocalStorage();
+        if (savedImage) {
+          loadImage(savedImage.name, savedImage.src);
+          currentImageName = savedImage.name;
+        }
       });
     </script>
   </body>
