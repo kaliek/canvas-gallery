@@ -9,8 +9,17 @@ body {
   height: 100vh;
 }
 
+#current-image-info {
+  display: none;
+}
+
 #current-image-name {
   font-weight: bold;
+  display: none;
+}
+
+#delete-image-button {
+    display: none;
 }
 #image {
   flex-grow: 1;

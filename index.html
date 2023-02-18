@@ -16,9 +16,16 @@
       <div id="content">
         <div class="flex-space-inbetween">
           <span id="current-image-name"></span>
+          <div id="current-image-info" class="right">
+            <button id="back-button">Back</button>
+            <span id="current-index"></span>
+            <span>of</span>
+            <span id="image-count"></span>
+            <button id="next-button">Next</button>
+          </div>
         </div>
         <div class="right">
-          <button id="delete">Delete</button>
+          <button id="delete-image-button">Delete</button>
           <input
             type="file"
             id="selectedFile"
@@ -200,21 +207,102 @@
             reader.onload = () => {
               loadImage(imageName, reader.result);
               saveImageToLocalStorage(imageName, reader.result);
+              if (savedImageList.length === 2) {
+                const imageInfoElement =
+                  document.getElementById("current-image-info");
+                imageInfoElement.style.display = "block";
+                document.getElementById("current-index").textContent =
+                  currentImageOrder + 1;
+                document.getElementById("image-count").textContent =
+                  savedImageList.length;
+              }
+              if (savedImageList.length === 1) {
+                const deleteImageButton = document.getElementById(
+                  "delete-image-button"
+                );
+                deleteImageButton.style.display = "inline";
+                const imageNameElement =
+                  document.getElementById("current-image-name");
+                imageNameElement.style.display = "inline";
+              }
             };
-          });
-        document.getElementById("delete").addEventListener("click", (e) => {
-          if (currentImageName) {
-            savedImageList = savedImageList.filter(
-              (i) => i !== currentImageName
-            );
-            localStorage.setItem(IMAGES_KEY, JSON.stringify(savedImageList));
-            localStorage.removeItem(currentImageName);
             refreshImage();
-          }
-        });
+          });
+        document
+          .getElementById("delete-image-button")
+          .addEventListener("click", (e) => {
+            if (currentImageName) {
+              savedImageList = savedImageList.filter(
+                (i) => i !== currentImageName
+              );
+              localStorage.setItem(IMAGES_KEY, JSON.stringify(savedImageList));
+              localStorage.removeItem(currentImageName);
+
+              if (savedImageList.length === 0) {
+                const imageInfoElement =
+                  document.getElementById("current-image-info");
+                if (imageInfoElement) {
+                  imageInfoElement.style.display = "none";
+                }
+                const deleteImageButton = document.getElementById(
+                  "delete-image-button"
+                );
+                deleteImageButton.style.display = "none";
+                document
+                  .getElementById("current-image")
+                  .setAttribute("src", "");
+              } else {
+                const imageCountElement =
+                  document.getElementById("image-count");
+                imageCountElement.textContent = savedImageList.length;
+                refreshImage();
+              }
+            }
+          });
+        document
+          .getElementById("back-button")
+          .addEventListener("click", (e) => {
+            currentImageOrder =
+              currentImageOrder === 0
+                ? savedImageList.length - 1
+                : currentImageOrder - 1;
+            refreshImage();
+            document.getElementById("current-index").textContent =
+              currentImageOrder + 1;
+          });
+        document
+          .getElementById("next-button")
+          .addEventListener("click", (e) => {
+            currentImageOrder =
+              currentImageOrder === savedImageList.length - 1
+                ? 0
+                : currentImageOrder + 1;
+            refreshImage();
+            document.getElementById("current-index").textContent =
+              currentImageOrder + 1;
+          });
 
         // Initial loading
-        refreshImage();
+        if (savedImageList.length > 1) {
+          const imageInfoElement =
+            document.getElementById("current-image-info");
+          imageInfoElement.style.display = "block";
+
+          document.getElementById("current-index").textContent =
+            currentImageOrder + 1;
+          document.getElementById("image-count").textContent =
+            savedImageList.length;
+        }
+        if (savedImageList.length > 0) {
+          const imageNameElement =
+            document.getElementById("current-image-name");
+          imageNameElement.style.display = "inline";
+          const deleteImageButton = document.getElementById(
+            "delete-image-button"
+          );
+          deleteImageButton.style.display = "inline";
+          refreshImage();
+        }
       });
     </script>
   </body>
