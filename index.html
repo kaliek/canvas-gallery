@@ -18,6 +18,7 @@
           <span id="current-image-name"></span>
         </div>
         <div class="right">
+          <button id="delete">Delete</button>
           <input
             type="file"
             id="selectedFile"
@@ -45,6 +46,9 @@
         let imageHeight = canvas.height;
         let isDrawing = false;
         let start = { x: 0, y: 0 };
+        let currentImageName = "";
+        let currentImageOrder = 0;
+        let savedImageList = getImageListFromLocalStorage();
 
         function getImageListFromLocalStorage() {
           const storedImageList = localStorage.getItem(IMAGES_KEY);
@@ -63,15 +67,8 @@
           return undefined;
         }
         function saveImageToLocalStorage(name, src) {
-          const currentImageList = localStorage.getItem(IMAGES_KEY);
-          if (!currentImageList) {
-            const list = [name];
-            localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
-          } else {
-            const list = JSON.parse(currentImageList);
-            list.unshift(name); // More recent comes first
-            localStorage.setItem(IMAGES_KEY, JSON.stringify(list));
-          }
+          savedImageList.unshift(name);
+          localStorage.setItem(IMAGES_KEY, JSON.stringify(savedImageList));
           localStorage.setItem(name, src);
         }
         function loadImage(id, src) {
@@ -102,6 +99,13 @@
             document.querySelector("#current-image-name").textContent =
               imageName;
           };
+        }
+        function refreshImage() {
+          const savedImage = getImageFromLocalStorage();
+          if (savedImage) {
+            loadImage(savedImage.name, savedImage.src);
+            currentImageName = savedImage.name;
+          }
         }
         function getMousePos(canvas, e) {
           const rect = canvas.getBoundingClientRect();
@@ -181,7 +185,9 @@
           context.stroke();
           context.fill();
         }
-
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
         document
           .querySelector("#selectedFile")
           .addEventListener("change", (e) => {
@@ -196,19 +202,19 @@
               saveImageToLocalStorage(imageName, reader.result);
             };
           });
-        canvas.addEventListener("mousedown", startPosition);
-        canvas.addEventListener("mouseup", endPosition);
-        canvas.addEventListener("mousemove", draw);
+        document.getElementById("delete").addEventListener("click", (e) => {
+          if (currentImageName) {
+            savedImageList = savedImageList.filter(
+              (i) => i !== currentImageName
+            );
+            localStorage.setItem(IMAGES_KEY, JSON.stringify(savedImageList));
+            localStorage.removeItem(currentImageName);
+            refreshImage();
+          }
+        });
 
         // Initial loading
-        let currentImageName = "";
-        let currentImageOrder = 0;
-        let savedImageList = getImageFromLocalStorage();
-        const savedImage = getImageFromLocalStorage();
-        if (savedImage) {
-          loadImage(savedImage.name, savedImage.src);
-          currentImageName = savedImage.name;
-        }
+        refreshImage();
       });
     </script>
   </body>

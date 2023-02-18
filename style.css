@@ -1,40 +1,40 @@
 body {
-    font-family: sans-serif, arial, helvetica;
-    font-size: 2em;
+  font-family: sans-serif, arial, helvetica;
+  font-size: 2em;
 }
 
 #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 #current-image-name {
-    font-weight: bold;
+  font-weight: bold;
 }
 #image {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 #content {
-    flex-grow: 0;
+  flex-grow: 0;
 }
 
 button {
-    width: fit-content;
+  width: fit-content;
 }
 
 img {
-    position: absolute;
-    pointer-events: initial;
+  position: absolute;
+  pointer-events: initial;
 }
 
 canvas {
-    position: relative;
-    border: 1px solid #eee;
-    z-index: 20;
+  position: relative;
+  border: 1px solid #eee;
+  z-index: 20;
 }
 
 .right {
-    margin-left: auto;
+  width: max-content;
+  margin-left: auto;
 }
-
