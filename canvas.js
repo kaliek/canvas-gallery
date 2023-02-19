@@ -17,29 +17,25 @@ export function createSvg(imageHeight, imageWidth, height, width, x, y, tag) {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
   svg.setAttribute('id', tag);
-  svg.setAttribute(
-    'style',
-    `position: absolute;height: ${imageHeight}px;width:${imageWidth}px;`,
-  );
-  const g = document.createElementNS(svgns, 'g');
-  g.setAttribute('style', `height: ${imageHeight}px;width:${imageWidth}px;`);
+  svg.style.position = 'absolute';
+  svg.style.top = `${y}px`;
+  svg.style.left = `${x}px`;
+  svg.setAttribute('height', height);
+  svg.setAttribute('width', width);
   const rect = document.createElementNS(svgns, 'rect');
-  rect.setAttribute('x', x);
-  rect.setAttribute('y', y);
-  rect.setAttribute('height', height);
-  rect.setAttribute('width', width);
+  rect.setAttribute('height', '100%');
+  rect.setAttribute('width', '100%');
   rect.setAttribute('stroke', '#B1B9C0');
   rect.setAttribute('fill', 'none');
   rect.setAttribute('stroke-width', '1px');
   const text = document.createElementNS(svgns, 'text');
-  text.setAttribute('x', x + 2);
-  text.setAttribute('y', y + 16);
+  text.setAttribute('x', 2);
+  text.setAttribute('y', 16);
   text.setAttribute('font-size', 14);
   text.setAttribute('fill', '#B1B9C0');
   text.textContent = tag;
-  g.appendChild(rect);
-  g.appendChild(text);
-  svg.appendChild(g);
+  svg.appendChild(rect);
+  svg.appendChild(text);
   return svg;
 }
 export function startPosition(e, canvas) {
