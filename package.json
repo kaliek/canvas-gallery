@@ -1,0 +1,27 @@
+{
+  "name": "canvas-gallery",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaliek/canvas-gallery.git"
+  },
+  "keywords": [
+    "canvas",
+    "tag"
+  ],
+  "author": "Yujiao Mo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaliek/canvas-gallery/issues"
+  },
+  "homepage": "https://github.com/kaliek/canvas-gallery#readme",
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
