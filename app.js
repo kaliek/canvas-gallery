@@ -64,10 +64,10 @@ window.addEventListener('load', () => {
     reader.readAsDataURL(file);
 
     reader.onload = () => {
-      currentImageName = file.name;
+      currentImageName = file.name.replace(/\.[^/.]+$/, '');
       refreshImage(currentImageName, reader.result);
       savedImageList = saveItemToListLocalStorage(
-        file.name,
+        currentImageName,
         reader.result,
         IMAGES_KEY,
         savedImageList,
