@@ -4,6 +4,8 @@ import {
   saveItemToListLocalStorage,
   deleteItemToListLocalStorage,
   getItemFromListLocalStorage,
+  getSvgTagsFromLocalStorage,
+  deleteAllSvgTagsFromLocalStorage,
 } from './storage.js';
 import {
   getImageDimensions,
@@ -13,7 +15,7 @@ import {
   refreshSavedImageList,
 } from './image.js';
 import {
-  startPosition, endPosition, draw,
+  startPosition, endPosition, draw, loadTag,
 } from './canvas.js';
 
 const IMAGES_KEY = 'IMAGES_LIST';
@@ -21,6 +23,7 @@ const IMAGES_KEY = 'IMAGES_LIST';
 window.addEventListener('load', () => {
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
+  const image = document.getElementById('current-image');
   let imageWidth = canvas.width;
   let imageHeight = canvas.height;
   let currentImageName = '';
@@ -28,7 +31,6 @@ window.addEventListener('load', () => {
   let savedImageList = getListFromLocalStorage(IMAGES_KEY);
 
   function loadImage(src) {
-    const image = document.getElementById('current-image');
     image.src = src;
     image.onload = () => {
       const imageDimensions = getImageDimensions(image);
@@ -41,21 +43,42 @@ window.addEventListener('load', () => {
     };
   }
 
+  function setCurrentImageName(name) {
+    currentImageName = name;
+  }
+
+  function clearTags() {
+    document.getElementById('tags').innerHTML = '';
+    document.querySelectorAll('svg').forEach((e) => e.remove());
+    document.getElementById('clear-all-tags-button').style.display = 'none';
+  }
+
+  function loadCurrentTagList(imageName) {
+    clearTags();
+    const currentImageTags = getSvgTagsFromLocalStorage(imageName);
+    if (currentImageTags.length > 0) {
+      currentImageTags.forEach((t) => {
+        loadTag(t.tag, imageName, imageHeight, imageWidth, t.height, t.width, t.x, t.y);
+      });
+    }
+  }
+
   function refreshImage(name, src) {
     loadImage(src);
     refreshCurrentImageName(name);
+    loadCurrentTagList(name);
   }
 
   function loadCurrentImage(imageIndex, list) {
     const savedImage = getItemFromListLocalStorage(imageIndex, list);
     if (savedImage) {
-      currentImageName = savedImage.key;
+      setCurrentImageName(savedImage.key);
       refreshCurrentImageIndex(imageIndex);
       refreshImage(currentImageName, savedImage.value);
     }
   }
   canvas.addEventListener('mousedown', (e) => startPosition(e, canvas));
-  canvas.addEventListener('mouseup', (e) => endPosition(e, canvas, context, imageWidth, imageHeight));
+  canvas.addEventListener('mouseup', (e) => endPosition(e, canvas, context, currentImageName, imageWidth, imageHeight));
   canvas.addEventListener('mousemove', (e) => draw(e, canvas, context));
   document.querySelector('#selectedFile').addEventListener('change', (e) => {
     e.preventDefault();
@@ -64,7 +87,7 @@ window.addEventListener('load', () => {
     reader.readAsDataURL(file);
 
     reader.onload = () => {
-      currentImageName = file.name.replace(/\.[^/.]+$/, '');
+      setCurrentImageName(file.name.replace(/\.[^/.]+$/, ''));
       refreshImage(currentImageName, reader.result);
       savedImageList = saveItemToListLocalStorage(
         currentImageName,
@@ -84,6 +107,7 @@ window.addEventListener('load', () => {
           IMAGES_KEY,
           savedImageList,
         );
+        deleteAllSvgTagsFromLocalStorage(currentImageName);
         refreshSavedImageList(savedImageList);
         currentImageIndex = recalculateImageIndex(
           currentImageIndex,
@@ -108,6 +132,10 @@ window.addEventListener('load', () => {
       'next',
     );
     loadCurrentImage(currentImageIndex, savedImageList);
+  });
+  document.getElementById('clear-all-tags-button').addEventListener('click', () => {
+    deleteAllSvgTagsFromLocalStorage(currentImageName);
+    clearTags();
   });
 
   // Initial loading

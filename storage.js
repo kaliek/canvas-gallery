@@ -32,3 +32,40 @@ export function getItemFromListLocalStorage(itemIndex, list) {
   }
   return undefined;
 }
+
+export function saveSvgTagToLocalStorage(tag, imageName, height, width, x, y) {
+  const key = `${imageName}_${tag}`;
+  const value = {
+    height,
+    width,
+    x,
+    y,
+    tag,
+  };
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function getSvgTagsFromLocalStorage(imageName) {
+  const allItems = { ...localStorage };
+  const tags = [];
+  Object.keys(allItems).forEach((k) => {
+    if (k.startsWith(`${imageName}_`)) {
+      // .replace(imageName + '_', '')
+      tags.push({ ...JSON.parse(allItems[k]), key: k });
+    }
+  });
+  return tags;
+}
+
+export function deleteSvgTagFromLocalStorage(key) {
+  localStorage.removeItem(key);
+}
+
+export function deleteAllSvgTagsFromLocalStorage(imageName) {
+  const allItems = { ...localStorage };
+  Object.keys(allItems).forEach((k) => {
+    if (k.startsWith(`${imageName}_`)) {
+      localStorage.removeItem(k);
+    }
+  });
+}
