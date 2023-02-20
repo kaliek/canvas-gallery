@@ -49,7 +49,7 @@ window.addEventListener('load', () => {
 
   function clearTags() {
     document.getElementById('tags').innerHTML = '';
-    document.querySelectorAll('svg').forEach((e) => e.remove());
+    document.querySelector('svg').innerHTML = '';
     document.getElementById('clear-all-tags-button').style.display = 'none';
   }
 

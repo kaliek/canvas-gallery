@@ -13,29 +13,29 @@ function getMousePos(canvas, e) {
   };
 }
 
-export function createSvg(imageHeight, imageWidth, height, width, x, y, tag) {
+export function createTag(imageHeight, imageWidth, height, width, x, y, tag) {
   const svgns = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgns, 'svg');
-  svg.setAttribute('id', tag);
-  svg.style.position = 'absolute';
-  svg.style.top = `${y}px`;
-  svg.style.left = `${x}px`;
-  svg.setAttribute('height', height);
-  svg.setAttribute('width', width);
+  const svg = document.querySelector('svg');
+
   const rect = document.createElementNS(svgns, 'rect');
-  rect.setAttribute('height', '100%');
-  rect.setAttribute('width', '100%');
+  rect.setAttribute('x', x);
+  rect.setAttribute('y', y);
+  rect.setAttribute('height', height);
+  rect.setAttribute('width', width);
   rect.setAttribute('stroke', '#B1B9C0');
   rect.setAttribute('fill', 'none');
   rect.setAttribute('stroke-width', '1px');
   const text = document.createElementNS(svgns, 'text');
-  text.setAttribute('x', 2);
-  text.setAttribute('y', 16);
+  text.setAttribute('x', x + 2);
+  text.setAttribute('y', y + 16);
   text.setAttribute('font-size', 14);
   text.setAttribute('fill', '#B1B9C0');
   text.textContent = tag;
-  svg.appendChild(rect);
-  svg.appendChild(text);
+  const g = document.createElementNS(svgns, 'g');
+  g.setAttribute('id', tag);
+  g.appendChild(rect);
+  g.appendChild(text);
+  svg.appendChild(g);
   return svg;
 }
 export function startPosition(e, canvas) {
@@ -60,9 +60,7 @@ export function loadTag(tag, imageName, imageHeight, imageWidth, height, width, 
   };
   item.appendChild(button);
   list.appendChild(item);
-  const svg = createSvg(imageHeight, imageWidth, height, width, x, y, tag);
-  const parent = document.getElementById('image');
-  parent.insertBefore(svg, document.querySelector('canvas'));
+  createTag(imageHeight, imageWidth, height, width, x, y, tag);
   document.getElementById('clear-all-tags-button').style.display = 'block';
 }
 
