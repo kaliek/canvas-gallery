@@ -1,67 +1,16 @@
 /* eslint-disable import/extensions */
-import { deleteSvgTagFromLocalStorage, saveSvgTagToLocalStorage } from './storage.js';
+import { saveSvgTagToLocalStorage } from './storage.js';
+import { getMousePos } from './utils.js';
+import { loadTag } from './svg.js';
 
 let isDrawing = false;
 let start = { x: 0, y: 0 };
-function getMousePos(canvas, e) {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  return {
-    x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top) * scaleY,
-  };
-}
 
-export function createTag(imageHeight, imageWidth, height, width, x, y, tag) {
-  const svgns = 'http://www.w3.org/2000/svg';
-  const svg = document.querySelector('svg');
-
-  const rect = document.createElementNS(svgns, 'rect');
-  rect.setAttribute('x', x);
-  rect.setAttribute('y', y);
-  rect.setAttribute('height', height);
-  rect.setAttribute('width', width);
-  rect.setAttribute('stroke', '#B1B9C0');
-  rect.setAttribute('fill', 'none');
-  rect.setAttribute('stroke-width', '1px');
-  const text = document.createElementNS(svgns, 'text');
-  text.setAttribute('x', x + 2);
-  text.setAttribute('y', y + 16);
-  text.setAttribute('font-size', 14);
-  text.setAttribute('fill', '#B1B9C0');
-  text.textContent = tag;
-  const g = document.createElementNS(svgns, 'g');
-  g.setAttribute('id', tag);
-  g.appendChild(rect);
-  g.appendChild(text);
-  svg.appendChild(g);
-  return svg;
-}
 export function startPosition(e, canvas) {
   e.preventDefault();
   e.stopPropagation();
   isDrawing = true;
   start = getMousePos(canvas, e);
-}
-export function loadTag(tag, imageName, imageHeight, imageWidth, height, width, x, y) {
-  const list = document.querySelector('#tags');
-  const item = document.createElement('li');
-  item.textContent = tag;
-  const button = document.createElement('button');
-  button.textContent = 'Delete';
-  button.onclick = () => {
-    deleteSvgTagFromLocalStorage(`${imageName}_${tag}`);
-    item.remove();
-    document.getElementById(tag).remove();
-    if (list.children.length === 0) {
-      document.getElementById('clear-all-tags-button').style.display = 'none';
-    }
-  };
-  item.appendChild(button);
-  list.appendChild(item);
-  createTag(imageHeight, imageWidth, height, width, x, y, tag);
-  document.getElementById('clear-all-tags-button').style.display = 'block';
 }
 
 export function endPosition(e, canvas, context, imageName, imageWidth, imageHeight) {
@@ -78,6 +27,7 @@ export function endPosition(e, canvas, context, imageName, imageWidth, imageHeig
   loadTag(tag, imageName, imageHeight, imageWidth, height, width, start.x, start.y);
   saveSvgTagToLocalStorage(tag, imageName, height, width, start.x, start.y);
 }
+
 export function draw(e, canvas, context) {
   e.preventDefault();
   e.stopPropagation();

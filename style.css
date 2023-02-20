@@ -32,7 +32,6 @@ img {
 canvas {
   position: relative;
   border: 1px solid #eee;
-  z-index: 20;
 }
 
 .right {

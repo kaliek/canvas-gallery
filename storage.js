@@ -57,6 +57,12 @@ export function getSvgTagsFromLocalStorage(imageName) {
   return tags;
 }
 
+export function updateSvgTagFromLocalStorage(key, x, y) {
+  const tag = localStorage.getItem(key);
+  const newTag = { ...JSON.parse(tag), x, y };
+  localStorage.setItem(key, JSON.stringify(newTag));
+}
+
 export function deleteSvgTagFromLocalStorage(key) {
   localStorage.removeItem(key);
 }
