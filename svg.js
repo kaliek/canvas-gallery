@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { deleteSvgTagFromLocalStorage, updateSvgTagFromLocalStorage } from './storage.js';
 import { getMousePos } from './utils.js';
 

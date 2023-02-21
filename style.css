@@ -1,36 +1,6 @@
 body {
   font-family: sans-serif, arial, helvetica;
-  font-size: 2em;
-}
-
-.blue-button {
-  border: none;
-  background: inherit;
-  padding: 5px 10px;
   font-size: 16px;
-  cursor: pointer;
-  display: inline-block;
-  color: dodgerblue;
-}
-
-.blue-button:hover {background: #eee;}
-
-
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-#current-image-name {
-  font-weight: bold;
-}
-
-#image {
-  flex-grow: 1;
-}
-#content {
-  flex-grow: 0;
 }
 
 button {
@@ -52,8 +22,40 @@ svg {
   left: 0;
   top: 0;
 }
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#current-image-name {
+  font-weight: bold;
+}
+
+#image {
+  flex-grow: 1;
+}
+
+#content {
+  flex-grow: 0;
+}
+
+
+.blue-button {
+  border: none;
+  background: inherit;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: inline-block;
+  color: dodgerblue;
+}
+
+.blue-button:hover {
+  background: #eee;
+}
+
 .right {
   width: max-content;
   margin-left: auto;
 }
-

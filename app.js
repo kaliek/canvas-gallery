@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import {
   getListFromLocalStorage,
   saveItemToListLocalStorage,
@@ -35,6 +34,11 @@ window.addEventListener('load', () => {
   const svg = document.querySelector('svg');
   let maxWidth = 0;
   let maxHeight = 0;
+  let currentImageName = '';
+  let currentImageIndex = 0;
+  let savedImageList = getListFromLocalStorage(IMAGES_KEY);
+  let isDragging = false;
+
   function setSize(height, width) {
     maxHeight = height;
     maxWidth = width;
@@ -45,10 +49,6 @@ window.addEventListener('load', () => {
     svg.setAttribute('height', height);
     svg.setAttribute('width', width);
   }
-
-  let currentImageName = '';
-  let currentImageIndex = 0;
-  let savedImageList = getListFromLocalStorage(IMAGES_KEY);
 
   function loadImage(src) {
     image.src = src;
@@ -96,7 +96,6 @@ window.addEventListener('load', () => {
     }
   }
 
-  let isDragging = false;
   function mouseDown(e) {
     if (image.getAttribute('src') === '') {
       return;
@@ -143,10 +142,10 @@ window.addEventListener('load', () => {
   pad.addEventListener('mousedown', mouseDown);
   pad.addEventListener('mouseup', mouseUp);
   pad.addEventListener('mousemove', mouseMove);
-  document.querySelector('#selectedFile').addEventListener('change', (e) => {
+  document.getElementById('selectedFile').addEventListener('change', (e) => {
     e.preventDefault();
     const reader = new FileReader();
-    const file = e.target.files[0]; // First file for now
+    const file = e.target.files[0];
     reader.readAsDataURL(file);
 
     reader.onload = () => {

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { saveSvgTagToLocalStorage } from './storage.js';
 import { getMousePos } from './utils.js';
 import { loadTag } from './svg.js';

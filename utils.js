@@ -1,6 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-/* eslint-disable max-len */
-
 export function getMousePos(canvas, e) {
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
