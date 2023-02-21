@@ -3,6 +3,19 @@ body {
   font-size: 2em;
 }
 
+.blue-button {
+  border: none;
+  background: inherit;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  color: dodgerblue;
+}
+
+.blue-button:hover {background: #eee;}
+
+
 #app {
   display: flex;
   flex-direction: column;

@@ -81,6 +81,7 @@ export function loadTag(tag, imageName, imageHeight, imageWidth, height, width, 
     }
     allTags = allTags.filter((t) => t.tag === tag);
   };
+  button.setAttribute('class', 'blue-button');
   item.appendChild(button);
   list.appendChild(item);
   createTag(imageHeight, imageWidth, height, width, x, y, tag);

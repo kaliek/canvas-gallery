@@ -30,9 +30,11 @@ Local Storage is used to store all images and tags.
 Images names are saved to a list, and they are also keys to retrieve their own image datas which are saved as individual items in Local Storage.
 Tag keys are prefixed with its image name to allow different images to have the same tag text. Tag values have the positioning information as well to correctly load the tags when the page loads or refreshes.
 
+### 3. Responsiveness
+When window size changes, the image area will be adjusted to the `window.innerWidth` and `window.innerHeight`
+
 ## TODO List
 - [ ] Responsiveness for the tags
-- [ ] Allow multiple image uploads at once
 - [ ] Create unique id for each image and each tag
 - [ ] Make the cursor as "move" when nearing the border of a tag (now is only on the border)
 
