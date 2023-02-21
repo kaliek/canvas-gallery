@@ -14,24 +14,38 @@ import {
   refreshCurrentImageIndex,
   refreshSavedImageList,
 } from './image.js';
+import { startPosition, endPosition, draw } from './canvas.js';
 import {
-  startPosition, endPosition, draw,
-} from './canvas.js';
-import {
-  startDrag, endDrag, drag, loadTag, clearTags, isOnTagBorder,
+  startDrag,
+  endDrag,
+  drag,
+  loadTag,
+  clearTags,
+  isOnTagBorder,
 } from './svg.js';
-import {
-  getMousePos,
-} from './utils.js';
+import { getMousePos } from './utils.js';
 
 const IMAGES_KEY = 'IMAGES_LIST';
 
 window.addEventListener('load', () => {
+  const pad = document.getElementById('pad');
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
   const image = document.getElementById('current-image');
-  let imageWidth = canvas.width;
-  let imageHeight = canvas.height;
+  const svg = document.querySelector('svg');
+  let maxWidth = 0;
+  let maxHeight = 0;
+  function setSize(height, width) {
+    maxHeight = height;
+    maxWidth = width;
+    canvas.height = height;
+    canvas.width = width;
+    image.height = height;
+    image.width = width;
+    svg.setAttribute('height', height);
+    svg.setAttribute('width', width);
+  }
+
   let currentImageName = '';
   let currentImageIndex = 0;
   let savedImageList = getListFromLocalStorage(IMAGES_KEY);
@@ -39,13 +53,8 @@ window.addEventListener('load', () => {
   function loadImage(src) {
     image.src = src;
     image.onload = () => {
-      const imageDimensions = getImageDimensions(image);
-      imageWidth = imageDimensions.width;
-      imageHeight = imageDimensions.height;
-      canvas.width = imageWidth;
-      canvas.height = imageHeight;
-      image.width = imageWidth;
-      image.height = imageHeight;
+      const imageDimensions = getImageDimensions(image, maxHeight, maxWidth);
+      setSize(imageDimensions.height, imageDimensions.width);
     };
   }
 
@@ -58,7 +67,16 @@ window.addEventListener('load', () => {
     const currentTags = getSvgTagsFromLocalStorage(imageName);
     if (currentTags.length > 0) {
       currentTags.forEach((t) => {
-        loadTag(t.tag, imageName, imageHeight, imageWidth, t.height, t.width, t.x, t.y);
+        loadTag(
+          t.tag,
+          imageName,
+          maxHeight,
+          maxWidth,
+          t.height,
+          t.width,
+          t.x,
+          t.y,
+        );
       });
     }
   }
@@ -80,10 +98,10 @@ window.addEventListener('load', () => {
 
   let isDragging = false;
   function mouseDown(e) {
-    const { x, y } = getMousePos(canvas, e);
-    if (x > imageWidth || y > imageHeight) {
+    if (image.getAttribute('src') === '') {
       return;
     }
+    const { x, y } = getMousePos(canvas, e);
     const tag = isOnTagBorder(x, y);
     if (!tag) {
       startPosition(e, canvas);
@@ -94,12 +112,18 @@ window.addEventListener('load', () => {
   }
 
   function mouseUp(e) {
-    const { x, y } = getMousePos(canvas, e);
-    if (x > imageWidth || y > imageHeight) {
+    if (image.getAttribute('src') === '') {
       return;
     }
     if (!isDragging) {
-      endPosition(e, canvas, context, currentImageName, imageWidth, imageHeight);
+      endPosition(
+        e,
+        canvas,
+        context,
+        currentImageName,
+        maxWidth,
+        maxHeight,
+      );
     } else {
       isDragging = false;
       endDrag(e, canvas);
@@ -107,8 +131,7 @@ window.addEventListener('load', () => {
   }
 
   function mouseMove(e) {
-    const { x, y } = getMousePos(canvas, e);
-    if (x > imageWidth || y > imageHeight) {
+    if (image.getAttribute('src') === '') {
       return;
     }
     if (!isDragging) {
@@ -117,9 +140,9 @@ window.addEventListener('load', () => {
       drag(e, canvas);
     }
   }
-  window.addEventListener('mousedown', mouseDown);
-  window.addEventListener('mouseup', mouseUp);
-  window.addEventListener('mousemove', mouseMove);
+  pad.addEventListener('mousedown', mouseDown);
+  pad.addEventListener('mouseup', mouseUp);
+  pad.addEventListener('mousemove', mouseMove);
   document.querySelector('#selectedFile').addEventListener('change', (e) => {
     e.preventDefault();
     const reader = new FileReader();
@@ -173,12 +196,18 @@ window.addEventListener('load', () => {
     );
     loadCurrentImage(currentImageIndex, savedImageList);
   });
-  document.getElementById('clear-all-tags-button').addEventListener('click', () => {
-    deleteAllSvgTagsFromLocalStorage(currentImageName);
-    clearTags();
-  });
+  document
+    .getElementById('clear-all-tags-button')
+    .addEventListener('click', () => {
+      deleteAllSvgTagsFromLocalStorage(currentImageName);
+      clearTags();
+    });
 
+  window.addEventListener('resize', (e) => {
+    setSize(e.target.innerHeight, e.target.innerWidth);
+  });
   // Initial loading
+  setSize(window.innerHeight, window.innerWidth);
   refreshSavedImageList(savedImageList);
   loadCurrentImage(currentImageIndex, savedImageList);
 });

@@ -3,8 +3,6 @@
 ## What is it?
 This is a vanilla JS website that will allow users to upload images and annotate them.
 
- to a `canvas` area. Within the canvas element, the user will be able to create multiple tags with annotation. The tags can be deleted or dragged to a new position on the canvas, and the images can be deleted or rotated. Previous images and the associated tags will be initialised on load or refresh of the page.
-
 ## Features
 ### 1. Image Upload
 Clicking "Upload New Images" will prompt file selection. The selected images will be pushed to the front of the image list and saved in browser's Local Storage. The images are initiated on load or refresh of the page.
@@ -33,7 +31,7 @@ Images names are saved to a list, and they are also keys to retrieve their own i
 Tag keys are prefixed with its image name to allow different images to have the same tag text. Tag values have the positioning information as well to correctly load the tags when the page loads or refreshes.
 
 ## TODO List
-- [ ] Responsiveness
+- [ ] Responsiveness for the tags
 - [ ] Allow multiple image uploads at once
 - [ ] Create unique id for each image and each tag
 - [ ] Make the cursor as "move" when nearing the border of a tag (now is only on the border)

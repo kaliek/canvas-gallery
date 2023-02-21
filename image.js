@@ -1,6 +1,3 @@
-const MAX_WIDTH = 1920;
-const MAX_HEIGHT = 1080;
-
 function refreshElementVisibility(imageList) {
   const { length } = imageList;
   document.getElementById('current-image-info').style.display = length > 1 ? 'block' : 'none';
@@ -16,18 +13,18 @@ function refreshImageCount(imageList) {
   document.getElementById('image-count').textContent = imageList.length;
 }
 
-export function getImageDimensions(image) {
+export function getImageDimensions(image, maxHeight, maxWidth) {
   let { width, height } = image;
 
   // Change the resizing logic
   if (width > height) {
-    if (width > MAX_WIDTH) {
-      height *= MAX_WIDTH / width;
-      width = MAX_WIDTH;
+    if (width > maxWidth) {
+      height *= maxWidth / width;
+      width = maxWidth;
     }
-  } else if (height > MAX_HEIGHT) {
-    width *= MAX_HEIGHT / height;
-    height = MAX_HEIGHT;
+  } else if (height > maxHeight) {
+    width *= maxHeight / height;
+    height = maxHeight;
   }
   return { width, height };
 }

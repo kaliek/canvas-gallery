@@ -34,7 +34,13 @@ canvas {
   border: 1px solid #eee;
 }
 
+svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 .right {
   width: max-content;
   margin-left: auto;
 }
+

@@ -7,12 +7,12 @@
 
   <body>
     <div id="app">
-      <div id="image">
-        <img id="current-image" height="1080" width="1920" />
-        <canvas height="1080" width="1920">
+      <div id="pad">
+        <img id="current-image" alt="Please upload an image to start annotate"/>
+        <canvas>
           This text is displayed if your browser does not support HTML5 Canvas.
         </canvas>
-        <svg id="svg" style="position:absolute;left:0;" height="1080" width="1920">
+        <svg id="svg">
         </svg>
       </div>
       <div id="content">
@@ -36,7 +36,7 @@
           />
           <input
             type="button"
-            value="Upload New Image"
+            value="Upload New Images"
             onclick="document.getElementById('selectedFile').click();"
           />
         </div>
