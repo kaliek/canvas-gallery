@@ -33,9 +33,12 @@ Tag keys are prefixed with its image name to allow different images to have the 
 ### 3. Responsiveness
 When window size changes, the image area will be adjusted to the `window.innerWidth` and `window.innerHeight`
 
-## TODO List
-- [ ] Responsiveness for the tags
-- [ ] Create unique id for each image and each tag
-- [ ] Make the cursor as "move" when nearing the border of a tag (now is only on the border)
+## Limitations / TODO List
+- [ ] Create unique id for each image and each tag. 
+> Currently image names are used as the key to each image data stored in Local Storage, same with tag texts. In order not to use other libraries and `Math.random` is [not cryptographically secure](https://stackoverflow.com/a/5651854), and the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues) seems costly. This is left for future implementation.
+- [ ] Allow uploading multiple images at once.
+> Only one file can be selected when clicking "Upload New Images", this could be further developed to allow the user to upload many files at once.
+- [ ] Make the cursor as "move" when nearing the border of a tag.
+> Now is only on the border, and a `OFFSET` 10 is hardcoded to allow "error" for selecting the borders. Maybe this can be further enhanced in terms of UX design.
 
 
